@@ -1,10 +1,28 @@
-import React from 'react';
-
+import React, {useEffect, useState,useContext} from 'react';
+import { db } from '../../firebase/config';
 import Heart from '../../assets/Heart';
 import './Post.css';
+import { collection, getDocs } from 'firebase/firestore';
+import { PostContext } from '../../store/postContext';
+import { useNavigate } from 'react-router-dom';
 
 function Posts() {
-
+  const navigate = useNavigate();
+  const [products,setProducts] = useState([]);
+  const {setPostDetails} = useContext(PostContext);
+  useEffect(()=>{
+    getDocs(collection(db,'products')).then((snapshot)=>{
+        const allposts = snapshot.docs.map((product)=>{
+        return{
+          ...product.data(),
+          id:product.id
+        }
+      })
+      console.log(allposts);
+      setProducts(allposts)
+    }
+    )
+  },[])
   return (
     <div className="postParentDiv">
       <div className="moreView">
@@ -13,24 +31,28 @@ function Posts() {
           <span>View more</span>
         </div>
         <div className="cards">
-          <div
+        {products.map(product=>{
+          return(
+          <div onClick={() => { setPostDetails(product); navigate('/view') }}
             className="card"
           >
             <div className="favorite">
               <Heart></Heart>
             </div>
             <div className="image">
-              <img src="../../../Images/R15V3.jpg" alt="" />
+              <img src={product.url} alt="" />
             </div>
             <div className="content">
-              <p className="rate">&#x20B9; 250000</p>
-              <span className="kilometer">Two Wheeler</span>
-              <p className="name"> YAMAHA R15V3</p>
+              <p className="rate">&#x20B9; {product.price}</p>
+              <span className="kilometer">{product.category}</span>
+              <p className="name"> {product.name}</p>
             </div>
             <div className="date">
-              <span>Tue May 04 2021</span>
+              <span>{product.createdAt}</span>
             </div>
-          </div>
+          </div>)
+        })
+        }
         </div>
       </div>
       <div className="recommendations">

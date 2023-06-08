@@ -4,8 +4,9 @@ import {BrowserRouter as Router , Route, Routes} from 'react-router-dom';
 import Signup from './Pages/Signup';
 import Login from './Pages/Login';
 import Create from './Pages/Create';
+import ViewPost from './Pages/ViewPost';
 import { AuthContext } from './store/Context';
-
+import Post from './store/postContext';
 
 /**
  * ?  =====Import Components=====
@@ -31,18 +32,20 @@ function App() {
 
   return (
     <div>
+      <Post>
       <Router>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
           <Route path="/create" element={<Create />} />
-          
+          <Route path='/view' element={<ViewPost />} />
         </Routes>
        
 
       
-      </Router> 
+      </Router>
+      </Post> 
     </div>
   );
 }
